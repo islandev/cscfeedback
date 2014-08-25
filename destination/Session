@@ -1,6 +1,6 @@
 Type=MAIL
 mail.user=cloudservicecenterfeedback@gmail.com
-mail.password=sapcsc2014
+mail.password=******
 mail.transport.protocol=smtp
 mail.smtp.host=smtp.gmail.com
 Name=Session
