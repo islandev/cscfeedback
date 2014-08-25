@@ -1,0 +1,9 @@
+Type=MAIL
+mail.user=cloudservicecenterfeedback@gmail.com
+mail.password=sapcsc2014
+mail.transport.protocol=smtp
+mail.smtp.host=smtp.gmail.com
+Name=Session
+mail.smtp.starttls.enable=true
+mail.smtp.port=587
+mail.smtp.auth=true

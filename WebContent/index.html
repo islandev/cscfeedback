@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<![endif]-->
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>SAP CSC Feedback</title>
+		
+		<link rel="shortcut icon" href="img/SAP.ico" />
+		<link rel="stylesheet" type="text/css" href="css/outLink.css">
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+
+<script>
+/* $(function () {
+	var sendData= true;  
+	$('#fileupload').fileupload({
+	   dataType : 'json',
+	   autoUpload : false,
+	   add : function(e,data){
+	      $(".submitBtn a").on("click",function(){
+	          if(sendData){
+	              data.formData = $("#feedbackForm").serializeArray();              
+	              sendData = false;
+	          }
+
+	          data.submit();
+	      });
+	   },
+	   done: function(e,data){
+	       sendData = true;
+	   }
+	});
+}); */
+
+function checkSubmit()
+{
+
+	var type=document.getElementById("type");
+	var subject=document.getElementById("subject");
+	var requireSubject=document.getElementById("requireSubject");
+	
+	var message= document.getElementById("message");
+	
+    var fullname = document.getElementById("fullname");
+    var requireFullname= document.getElementById("requireFullName");
+    
+    var email = document.getElementById("email");
+    var requireEmail=document.getElementById("requreEmail");
+    
+    var telephone = document.getElementById("telephone");
+
+    var emailCheck = /(\S)+[@]{1}(\S)+[.]{1}(\w)+/;
+    var telephoneCheck=/^([0-9]|[\-])+$/g ;
+
+
+    
+    if(subject.value=="")
+    	{
+    	   requireSubject.innerHTML="&nbsp;&nbsp;&nbsp;Required";
+    	   subject.focus();
+    	}
+    else if (fullname.value=="")
+    	{
+    	requireFullname.innerHTML="&nbsp;&nbsp;&nbsp;Required";
+    	fullname.focus();
+    	}
+    else if (email.value=="")
+    {
+    	requireEmail.innerHTML="&nbsp;&nbsp;&nbsp;Required";
+    	email.focus();
+    }
+    else
+    {
+        if(!emailCheck.test(email.value))
+        {       	
+        	requireEmail.innerHTML="&nbsp;&nbsp;&nbsp;Please enter valid Email address, e.g. sample@gmail.com";
+        	email.focus();
+            return false;
+        }
+        
+        //validate and format telephone number
+        var telenum = telephone.value;
+        
+        //as telenum is optional, if user input it then do validation
+        if(telenum!=""){
+        	$.ajax({
+        		type:"post",
+           	    url:"FeedbackPhoneValidation?phone="+telenum,
+           	    dataType:"text",
+           	    success:function(data){
+           		    // if invalid telephone number
+        	  		if(data=="invalid"){
+        	  			var validPhone=document.getElementById("validPhone");
+        	  			validPhone.innerHTML="&nbsp;&nbsp;&nbsp;Please enter valid phone number, e.g. 028 12345678";
+        	  			telephone.focus();
+        	  		
+        	  		}else if(data=="error"){
+        	  			telephone.value = "";
+        	  			telephone.focus();
+        	  		}
+        	  		else{
+        	  			var validPhone=document.getElementById("validPhone");
+        	  			validPhone.innerHTML="";
+        	  			telephone.value = data;
+        	  			
+        	  			sendRequest();
+        	  		}
+           	   },
+        	   	error : function(jqXHR, textStatus, errorThrown) {
+        	   		telephone.value = "";
+        	   	}
+        	});
+        }else{
+        	sendRequest();
+        }
+	}
+}
+
+function sendRequest(){
+	var type=document.getElementById("type");
+	var subject=document.getElementById("subject");
+	var message= document.getElementById("message");
+    var fullname = document.getElementById("fullname");
+    var email = document.getElementById("email");
+    var telephone = document.getElementById("telephone");
+    
+	//if all fields are ok, post the request
+	  var obj = {};
+      obj.type = type.value;
+      obj.subject = subject.value;
+      obj.content = message.value;
+      obj.fullName = fullname.value;
+      obj.customerEmail = email.value;
+      obj.mobileNum = telephone.value;
+      
+      //console.log("Subject:"+obj.subject);
+      
+   	// show loading bar
+  	$("#g_waitpopup").show();
+      
+      $.ajax({
+    	   type:"post",
+    	    url:"FeedbackServlet",
+    	    data:JSON.stringify(obj),
+    	    contentType: 'application/json;charset=UTF-8',
+          mimeType: 'application/json',
+    	    dataType:"text",
+    	   success:function(data){
+    		   
+    		// hide loading bar
+    	    $("#g_waitpopup").hide();
+    		
+    		if(data=="success"){
+    			/* $.modal("<div class='modal_split_bar'></div><div class='modal_text'>Feedback succesfully sent. Thank you.</div><div class='modal_confirm_btn'><a>OK</a></div>",
+  					{minWidth:"250px",
+    				onShow:function(dialog){
+  						$(".modal_confirm_btn a").click(function(){
+  		        			$.modal.close();
+  		        		});
+  					}}); */
+  					
+  					//uploadFiles();
+  					
+  					//window.location.href="success.html";
+    		}else{
+    			$.modal("<div class='modal_split_bar'></div><div class='modal_text'>Things might go wrong, please try it later.</div><div class='modal_confirm_btn'><a>OK</a></div>",
+   					{minWidth:"250px",
+    				onShow:function(dialog){
+   						$(".modal_confirm_btn a").click(function(){
+   		        			$.modal.close();
+   		        		});
+   					}});
+    		}
+    			
+    	   },
+    	   error : function(jqXHR, textStatus, errorThrown) {     	  
+    		
+    		// hide loading bar
+       	$("#g_waitpopup").hide();
+    		
+    		 var message="";
+    		 if("timeout"==textStatus){
+    			message="Network error! Please try it later.";
+    		 }else if("parsererror"==textStatus){
+    			 message="Please provide valid information.";
+    		 }else{
+    			 message="Things might go wrong, please try it later."
+    		 }
+    		 $.modal("<div class='modal_split_bar'></div><div class='modal_text'>"+message+"</div><div class='modal_confirm_btn'><a>OK</a></div>",
+					{minWidth:"250px",
+    			 	 onShow:function(dialog){
+						$(".modal_confirm_btn a").click(function(){
+		        			$.modal.close();
+		        		});
+					}});
+    	   }
+    });
+}
+
+/* function uploadFiles(){
+	$('#fileupload').fileupload({
+		 
+        dataType: 'json',
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+        maxFileSize: 5000000, // 5 MB
+        previewMaxWidth: 100,
+        previewMaxHeight: 100,
+        previewCrop: true,
+        done: function (e, data) {
+        	console.log("upload return data:"+JSON.stringify(data));
+            //$("#results").html(data.result);
+        	$("tr:has(td)").remove();
+            $.each(data.result, function (index, file) {
+ 
+                $("#uploaded-files").append(
+                        $('<tr/>')
+                        .append($('<td/>').text(file.fileName))
+                        .append($('<td/>').text(file.fileSize))
+                        .append($('<td/>').text(file.fileType))
+                        .append($('<td/>').text(file.userName))
+                        )
+            }); 
+            
+        },
+ 
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .bar').css(
+                'width',
+                progress + '%'
+            );
+        },
+ 
+    }).bind('fileuploadsubmit', function (e, data) {
+        // The example input, doesn't have to be part of the upload form:
+        var fullname = $('#fullname');
+        data.formData = {username: fullname.val()};        
+    });
+} */
+
+function checkRequiredInput()
+	{
+	var subject=document.getElementById("subject");
+	var requireSubject=document.getElementById("requireSubject");
+    var fullname = document.getElementById("fullname");
+    var requireFullname= document.getElementById("requireFullName");
+    var email = document.getElementById("email");
+    var requireEmail=document.getElementById("requreEmail");
+    if(subject.value!="")
+	{
+	   requireSubject.innerHTML="";
+		
+	}
+ if (fullname.value!="")
+	{
+	requireFullname.innerHTML="";
+	}
+ if (email.value!="")
+    {
+	requireEmail.innerHTML="";
+    }
+}
+function checkPhoneNumber()
+{
+	var telephone = document.getElementById("telephone");
+	var value = telephone.value;
+	telephone.value=value.replace(/[^0-9- +]+/,'');
+	if(telephone.value==""){
+		var validPhone=document.getElementById("validPhone");
+		validPhone.innerHTML="";
+	}
+}
+</script>
+
+</head>
+<body>
+
+
+	<header> </header>
+	<section class="content" id="mainSection">
+
+
+		<header class="icon_container">
+			<img src="img/icon.png" alt="icon" align="left">
+			<div>The Best-Run Businesses Run SAP</div>
+		</header>
+		<div class="content-tit"></div>
+		<div class="title">
+			<h1>Please tell us how we can be better, describe what you like, or share your idea or suggestion.</h1>
+			<p>(* are mandatory fields)</p>
+		</div>
+		<div id="mMaskD" class="mainBody-wp">
+			<div class="mainBody">
+
+
+				<form id="feedbackForm" action="FeedbackServlet" enctype="multipart/form-data"
+					method="post">
+
+					<table>
+						<tr>
+							<th><span class="rq"></span><label for="type">Type:</label></th>
+							<td><select class="dropdown" id="type" tabindex="1">
+									<option value="0">Suggestion</option>
+									<option value="1">Question</option>
+									<option value="2">Bug</option>
+
+							</select></td>
+						</tr>
+					</table>
+					<br>
+
+
+					<table>
+						<tr>
+							<th><span class="rq"></span><label for="subject">Subject:</label></th>
+							<td><input type="text" id="subject" class="px"
+								onkeyup="checkRequiredInput()" tabindex="2" autocomplete="off"
+								size="25" maxlength="200" /></td>
+							<td><span class="rq">&nbsp;&nbsp;&nbsp;*</span></td>
+							<td><span id="requireSubject"
+								style="color: #F00; font-size: 12px;"></span></td>
+						</tr>
+					</table>
+
+					<br>
+
+					<table>
+						<tr>
+							<th><label for="message">Message:</label></th>
+							<td><textarea id="message" tabindex="2" required></textarea></td>
+						</tr>
+					</table>
+
+					<br>
+					<div class="details">
+						<p>Please provide your contact details below</p>
+					</div>
+
+
+					<table>
+						<tr>
+							<th><label for="fullname">Full Name:</label></th>
+							<td><input type="text" id="fullname"
+								onkeyup="checkRequiredInput()" class="px" tabindex="3"
+								autocomplete="off" size="25" maxlength="50" required /></td>
+							<td><span class="rq">&nbsp;&nbsp;&nbsp;*</span></td>
+							<td><span id="requireFullName"
+								style="color: #F00; font-size: 12px;"></span></td>
+						</tr>
+					</table>
+
+					<br>
+					<table>
+						<tr>
+							<th><label for="email">Email:</label></th>
+							<td><input type="text" id="email" class="px"
+								onkeyup="checkRequiredInput()" tabindex="4" autocomplete="off"
+								size="25" maxlength="50" required /></td>
+							<td><span class="rq">&nbsp;&nbsp;&nbsp;*</span></td>
+							<td><span id="requreEmail"
+								style="color: #F00; font-size: 12px;"></span></td>
+						</tr>
+					</table>
+					<br>
+
+					<table>
+						<tr>
+							<th><span class="rq"></span><label for="telephone">Telephone:</label></th>
+							<td><input type="text" id="telephone"
+								onkeyup="checkPhoneNumber()" class="px"
+								tabindex="5" autocomplete="off" size="25" maxlength="30" /></td>
+							<td><span class="rq">&nbsp;&nbsp;&nbsp;</span></td>
+							<td><span id="validPhone"
+								style="color: #F00; font-size: 12px;"></span></td>
+						</tr>
+					</table>
+					<br>
+
+					<table>
+						<tr>
+							<th><span class="rq"></span><label for="fileToUpload">Attachment:<br>(txt file only)</label></th>
+							<td><input id="fileupload" type="file" multiple></td>
+							<td></td>
+						</tr>
+					</table>
+					<br>
+					
+					<table>
+						<tr>
+							<th><span class="rq"></span><label for="upload"></label></th>
+							<td><button type="button" id="upload">Upload</button></td>
+							<td><span class="rq">&nbsp;</span></td>
+						</tr>
+					</table>
+					<br>
+					
+					
+				    <div id="results"></div>
+
+					<br>
+					<span class="submitBtn"><a onclick="checkSubmit()" tabindex="6">Submit Feedback</a></span>
+
+				</form>
+
+			</div>
+
+		</div>
+	</section>
+
+<div id="g_waitpopup"></div>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script src="js/jquery.simplemodal.1.4.4.min.js"></script>
+<script src="js/simpleUpload.min.js"></script>
+<script>
+$(function () {
+	$('#fileupload').simpleUpload({
+		  url: 'upload',
+		  types: ['txt'],
+		  size: 3072, // 3 mb
+    	  //types: ['jpg', 'jpeg','png', 'gif'],
+		  trigger: '#upload',
+		  beforeSend:function(){
+			  $("#g_waitpopup").show();
+		  },
+		  success: function(data){
+		    $("#results").html('Upload Success.');
+		    $("#g_waitpopup").hide();
+		    $("#upload").remove();
+		  }
+		});
+});
+</script>
+</body>
+</html>

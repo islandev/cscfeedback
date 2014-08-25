@@ -1,0 +1,190 @@
+.content .reg-infoBox {
+	width: 480px
+}
+
+label {
+width: 100px;
+display: block;
+}
+
+input {
+width: 390px;
+height: 25px;
+}
+ 
+ 
+.title{ 
+	margin: 20px 0;
+}
+.title h1 {
+    font-size: 1.1em;
+}
+
+#submitBtn,{
+ /*width: 150px;
+ height: 35px;*/
+ width: 150px;
+ 
+}
+.submitBtn{
+	background-image: url("/img/toolbar.png");
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 26px;
+    padding-left: 3px;
+}
+.submitBtn a{
+	display: block;
+ 	background-image: url("/img/toolbar.png");
+    background-position: 90% 0;
+    background-repeat: no-repeat;
+    color: #F7F7F7;
+    display: block;
+    font-weight: bold;
+    line-height: 26px;
+    padding: 0 21px 0 12px;
+    text-decoration: none !important;
+    white-space: nowrap;
+    cursor:pointer;
+    -webkit-border-radius: 4px;  
+    -moz-border-radius: 4px;  
+    border-radius: 4px;
+}
+
+.submitBtn:hover{
+	background-position:0 -100px;
+}
+.submitBtn:hover a{
+	background-position:90% -100px;
+}
+
+.details{
+	margin-bottom: 20px ;
+}
+
+.details > p {
+    font-size: 1.1em;
+}
+.icon_container{
+	height: 33px;
+}
+.icon_container div{
+	height:33px;
+	line-height:33px;
+	font-weight: bold;
+}
+
+
+.dropdown{
+	width: 200px;
+     display: block;
+}
+
+
+/*** dialog styles ***/
+#simplemodal-overlay {
+	background-color:#000; 
+	z-index:12999 !important
+}
+#simplemodal-container {
+	background-color:#FFF; 
+	border-top:4px solid #FFF; 
+	border-bottom:4px solid #FFF; 
+	border-left:8px solid #FFF; 
+	border-right:8px solid #FFF; 			
+	padding:12px; 
+	z-index: 13000 !important;
+	max-width: 850px;	
+	//padding-bottom:80px; /* weird that i had to add this... */
+}
+.simplemodal-custom-close, 
+.simplemodal-custom-close:link, 
+.simplemodal-custom-close:visited, 
+.simplemodal-custom-close:hover {
+	float:right; 
+	position: relative;
+	cursor: pointer; 
+	text-decoration:none;
+	color: #333;
+}
+#simplemodal-container a.modalCloseImg {
+	background:url(/img/x.png) no-repeat; /* adjust url as required */
+	width:25px;
+	height:29px;
+	display:inline;
+	z-index:3200;
+	position:absolute;
+	top:-15px;
+	right:-18px;
+	cursor:pointer;
+}
+.modal_split_bar{
+	background-color:#F0AB00;
+	height: 4px;
+    margin-top: 10px;
+}
+.modal_text{
+	font-size: 1.1em;
+	margin: 10px 0 20px 0;
+}
+.modal_confirm_btn{
+	float:right;
+    width: 50px;
+ 
+}
+.modal_confirm_btn{
+	background-image: url("/img/toolbar.png");
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 26px;
+    padding-left: 3px;
+}
+.modal_confirm_btn a{
+	display: block;
+ 	background-image: url("/img/toolbar.png");
+    background-position: 90% 0;
+    background-repeat: no-repeat;
+    color: #F7F7F7;
+    display: block;
+    font-weight: bold;
+    line-height: 26px;
+    padding: 0 21px 0 16px;
+    text-decoration: none !important;
+    white-space: nowrap;
+    cursor:pointer;
+    -webkit-border-radius: 4px;  
+    -moz-border-radius: 4px; 
+    border-radius: 4px;
+}
+
+.modal_confirm_btn:hover{
+	background-position:0 -100px;
+}
+.modal_confirm_btn:hover a{
+	background-position:90% -100px;
+}
+
+
+textarea{
+	box-sizing: border-box;
+	resize: none;
+	width: 390px;
+	height: 150px;
+	
+}
+
+
+
+#g_waitpopup {
+	background: url('/img/bx_loader.gif') no-repeat scroll center center rgba(255,255,255, 0.3);
+	display: none;
+	height: 100%;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 30000;
+}
+
+
+

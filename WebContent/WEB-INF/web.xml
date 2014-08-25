@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>cscfeedback</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <description></description>
+    <display-name>FeedbackServlet</display-name>
+    <servlet-name>FeedbackServlet</servlet-name>
+    <servlet-class>com.sap.csc.FeedbackServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FeedbackServlet</servlet-name>
+    <url-pattern>/FeedbackServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <display-name>FeedbackPhoneValidation</display-name>
+    <servlet-name>FeedbackPhoneValidation</servlet-name>
+    <servlet-class>com.sap.csc.FeedbackPhoneValidation</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FeedbackPhoneValidation</servlet-name>
+    <url-pattern>/FeedbackPhoneValidation</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>FileUploadServlet</display-name>
+    <servlet-name>upload</servlet-name>
+    <servlet-class>com.sap.csc.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>upload</servlet-name>
+    <url-pattern>/upload</url-pattern>
+  </servlet-mapping>
+  
+    
+  <servlet>
+	  <servlet-name>cmisproxy</servlet-name>
+	  <servlet-class>com.sap.csc.CMISProxyServlet</servlet-class> 
+	</servlet> 
+	
+	<servlet-mapping>
+	  <servlet-name>cmisproxy</servlet-name>
+	  <url-pattern>/cmis/*</url-pattern> 
+	</servlet-mapping>
+	
+	
+    <resource-ref>
+    <res-ref-name>jdbc/DefaultDB</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+  </resource-ref>
+  
+    <resource-ref>
+    <res-ref-name>EcmService</res-ref-name>
+    <res-type>com.sap.ecm.api.EcmService</res-type>
+  </resource-ref>
+	
+	
+	<login-config>
+	  <auth-method>FORM</auth-method>
+	</login-config>
+	<security-constraint>
+	  <web-resource-collection>
+	    <web-resource-name>Protected Area</web-resource-name>
+	    <url-pattern>/cmis/*</url-pattern>
+	  </web-resource-collection>
+	  <auth-constraint>
+	    <!-- Role Everyone will not be assignable -->
+	    <role-name>FeedbackAdmin</role-name>
+	    </auth-constraint>
+	</security-constraint>
+	<security-role>
+	  <description>Only Administrator of Feedback application</description>
+	  <role-name>FeedbackAdmin</role-name>
+	</security-role>
+</web-app>
